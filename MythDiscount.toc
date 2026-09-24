@@ -4,7 +4,7 @@
 ## Notes: Per-character item levels and account upgrade watermarks.
 ## Notes-ruRU: Максимумы илвла персонажей и пороги улучшения аккаунта.
 ## Author: MythDiscount
-## Version: 1.0.0
+## Version: 1.0.1
 ## SavedVariables: MistDiscountDB
 
 Locale.lua

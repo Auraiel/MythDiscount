@@ -338,3 +338,21 @@ function A.ItemCanRaise(char, slot, item, account, inBags)
     end
     return A.CanRaise(virtual, slot, account)
 end
+
+-- Sort the same per-slot values shown in the tooltip, descending.
+-- Missing records are omitted; ties use name and GUID for a stable order.
+function A.CharactersBySlotLevel(db, slotKey)
+    local keys = {}
+    for guid, char in pairs(db.characters) do
+        local record = char.slots and char.slots[slotKey]
+        if record and A.Number(record.value) then keys[#keys+1] = guid end
+    end
+    table.sort(keys, function(a, b)
+        local ca, cb = db.characters[a], db.characters[b]
+        local la, lb = ca.slots[slotKey].value, cb.slots[slotKey].value
+        if la ~= lb then return la > lb end
+        if ca.name ~= cb.name then return ca.name < cb.name end
+        return a < b
+    end)
+    return keys
+end

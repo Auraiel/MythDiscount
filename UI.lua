@@ -57,7 +57,7 @@ local function Tooltip(row)
     end
     GameTooltip:AddLine(" ")
     GameTooltip:AddLine(A.T("Все персонажи:"), 1, 0.82, 0)
-    for _, guid in ipairs(A.CharacterKeys(A.db)) do
+    for _, guid in ipairs(A.CharactersBySlotLevel(A.db, slot.key)) do
         local c = A.db.characters[guid]
         local s = c.slots[slot.key]
         if s and A.Number(s.value) then
@@ -75,7 +75,8 @@ function A.RefreshUI()
     if not char then return end
     local offline = A.selected ~= A.guid
     f.character:Update()
-    f.title:SetText(A.T("MythDiscount  |  Пороги улучшения"))
+    f.title:SetText("MythDiscount")
+    f.languageLabel:SetText(A.T("Язык:"))
     for i, label in ipairs({"Слот", "Надето", "Есть в сумках", "Максимум на аккаунте"}) do
         f.headers[i]:SetText(A.T(label))
     end
@@ -165,7 +166,7 @@ function A.RefreshUI()
     f.raise:SetPoint("TOPLEFT", 20, -rowY - 16)
     f:SetHeight(rowY + (showAccount and 90 or 22))
     local prefix = offline and A.T("Может поднять лимит скидки уч. записи (снимок): ") or A.T("Может поднять лимит скидки уч. записи: ")
-    f.raise:SetText(prefix .. (#raises > 0 and table.concat(raises, "; ") or A.T("нет подтверждённых слотов")))
+    f.raise:SetText(prefix .. (#raises > 0 and table.concat(raises, "; ") or A.T("отсутствует")))
 
 end
 
@@ -185,10 +186,14 @@ function A.CreateUI()
     f:SetScript("OnDragStart", f.StartMoving); f:SetScript("OnDragStop", f.StopMovingOrSizing)
     f:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left=4,right=4,top=4,bottom=4} })
     f:SetBackdropColor(0.045, 0.06, 0.085, 0.98); f:SetBackdropBorderColor(0.3, 0.4, 0.5)
-    f.title = Text(f, 20, -18, 390, "GameFontNormalLarge")
+    f.title = Text(f, 20, -18, 300, "GameFontNormalLarge")
+    f.languageLabel = Text(f, 345, -19, 70)
     f.language = CreateFrame("DropdownButton", nil, f, "WowStyle1DropdownTemplate")
     f.language:SetPoint("TOPLEFT", 420, -12)
     f.language:SetSize(150, 24)
+    f.languageLabel:ClearAllPoints()
+    f.languageLabel:SetPoint("RIGHT", f.language, "LEFT", -10, 0)
+    f.languageLabel:SetJustifyH("RIGHT")
     f.language:SetupMenu(function(_, root)
         for _, option in ipairs({{"auto", A.T("Авто (клиент)")}, {"ruRU", "Русский"}, {"enUS", "English"}}) do
             root:CreateRadio(option[2], function(value) return A.LanguageChoice() == value end,
@@ -199,7 +204,7 @@ function A.CreateUI()
     close:SetPoint("TOPRIGHT", -5, -5)
     f.character = CreateFrame("DropdownButton", nil, f, "WowStyle1DropdownTemplate")
     f.character:SetPoint("TOPLEFT", 20, -50)
-    f.character:SetSize(430, 24)
+    f.character:SetSize(330, 24)
     f.character:SetupMenu(function(_, root)
         root:SetScrollMode(300)
         for _, guid in ipairs(A.CharacterKeys(A.db)) do
@@ -251,7 +256,7 @@ function A.CreateUI()
         row:SetScript("OnLeave", function() GameTooltip:Hide() end)
         f.rows[i] = row
     end
-    f.raise = Text(f, 20, -642, 575)
+    f.raise = Text(f, 20, -642, 575, "GameFontHighlight")
     f.raise:SetSpacing(3)
     f.raise:SetTextColor(0.2, 0.6, 1)
     tinsert(UISpecialFrames, "MythDiscountFrame")

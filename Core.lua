@@ -10,6 +10,7 @@ end
 
 local function Initialize()
     MistDiscountDB = MistDiscountDB or { version = 1, contexts = {} }
+    if MistDiscountDB.hideUnavailable == nil then MistDiscountDB.hideUnavailable = true end
     MistDiscountDB.contexts = MistDiscountDB.contexts or {}
     -- Isolate future stat squishes and seasons; never compare pre-squish peaks.
     local version = GetBuildInfo() or "12"
