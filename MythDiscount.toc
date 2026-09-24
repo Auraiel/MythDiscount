@@ -1,0 +1,13 @@
+## Interface: 120100
+## Title: MythDiscount
+## IconTexture: Interface\Icons\inv_121_crest_myth_enchanted
+## Notes: Per-character item levels and account upgrade watermarks.
+## Notes-ruRU: Максимумы илвла персонажей и пороги улучшения аккаунта.
+## Author: MythDiscount
+## Version: 1.0.0
+## SavedVariables: MistDiscountDB
+
+Locale.lua
+Model.lua
+Core.lua
+UI.lua
